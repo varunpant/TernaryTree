@@ -1,23 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace TernarySearchTree
 {
-    // public class TernaryTree
+
+    /// <summary>
+    /// Creates an instance of terenary search tree.
+    /// </summary>
+    /// <typeparam name="T">Value</typeparam>
     public class TernaryTree<T>
     {
-        private int N;       // size
-        private Node root; // root of trie
-        private class Node
-        {
-            internal char c; // character
-            internal Node left, mid, right; // left, middle, and right subtries
-            internal T val; // value associated with string
-        }
-        // return number of key-value pairs
+        /// <summary>
+        /// The size of tree.
+        /// </summary>
+        int N;
 
-        public int Size
+        // <summary>
+        /// The root
+        /// </summary>
+        Node root;
+
+        /// <summary>
+        /// Node instance.
+        /// </summary>
+        class Node
+        {
+            /// <summary>
+            /// character
+            /// </summary>
+            internal char c;
+
+            /// <summary>
+            /// The  left, middle, and right subtries.
+            /// </summary>
+            internal Node left, mid, right;
+
+            /// <summary>
+            /// The value associated with string
+            /// </summary>
+            internal T value;
+        }
+
+        /// <summary>
+        /// Gets the number of keys in tree.
+        /// </summary>
+        /// <value>
+        /// The size.
+        /// </value>
+        public int Length
         {
             get
             {
@@ -25,97 +55,160 @@ namespace TernarySearchTree
             }
         }
 
-        public bool contains(string key)
+        /// <summary>
+        /// Determines whether the tree [contains] [the specified key].
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>
+        ///   <c>true</c> if the tree [contains] [the specified key]; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Contains(string key)
         {
-            return get(key) != null;
+            Node node = get(root, key, 0);
+            if (IsNull(node)) return false;
+            return true;
         }
 
-        public T get(string key)
+        /// <summary>
+        /// Gets the <see cref="`0"/> with the specified key.
+        /// </summary>
+        /// <value>
+        /// The <see cref="`0"/>.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public T this[string key]
         {
-            Node x = get(root, key, 0);
-            if (IsNull(x)) return default(T);
-            return x.val;
+            get
+            {
+                Node node = get(root, key, 0);
+                if (IsNull(node)) return default(T);
+                return node.value;
+            }
+
         }
 
-        private Node get(Node x, string key, int d)
+        /// <summary>
+        /// Gets the specified x.
+        /// </summary>
+        /// <param name="node">The x.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="charIndex">The d.</param>
+        /// <returns></returns>
+        Node get(Node node, string key, int charIndex)
         {
-            if (x == null) return null;
-            char c = key[d];
-            if (c < x.c) return get(x.left, key, d);
-            else if (c > x.c) return get(x.right, key, d);
-            else if (d < key.Length - 1)
-                return get(x.mid, key, d + 1);
-            else return x;
+            if (node == null) return null;
+            char c = key[charIndex];
+            if (c < node.c) return get(node.left, key, charIndex);
+            else if (c > node.c) return get(node.right, key, charIndex);
+            else if (charIndex < key.Length - 1)
+                return get(node.mid, key, charIndex + 1);
+            else return node;
         }
-        public void put(string key, T val)
+        
+        /// <summary>
+        /// Adds the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        public void Add(string key, T value)
         {
-            if (!contains(key)) N++;
-            root = put(root, key, val, 0);
+            if (!Contains(key)) N++;
+            root = Add(root, key, value, 0);
         }
-        private Node put(Node x, string key, T val, int d)
+        
+        /// <summary>
+        /// Adds the specified node in the tree.
+        /// </summary>
+        /// <param name="node">The Node.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The val.</param>
+        /// <param name="charIndex">The d.</param>
+        /// <returns></returns>
+        Node Add(Node node, string key, T value, int charIndex)
         {
-            char c = key[d];
-            if (x == null) { x = new Node(); x.c = c; }
-            if (c < x.c) x.left = put(x.left, key, val, d);
-            else if (c > x.c) x.right = put(x.right, key, val, d);
-            else if (d < key.Length - 1)
-                x.mid = put(x.mid, key, val, d + 1);
-            else x.val = val;
-            return x;
+            char charAtIndex = key[charIndex];
+            if (node == null) { node = new Node(); node.c = charAtIndex; }
+            if (charAtIndex < node.c) node.left = Add(node.left, key, value, charIndex);
+            else if (charAtIndex > node.c) node.right = Add(node.right, key, value, charIndex);
+            else if (charIndex < key.Length - 1)
+                node.mid = Add(node.mid, key, value, charIndex + 1);
+            else node.value = value;
+            return node;
         }
 
-
-        public string longestPrefixOf(string s)
+        /// <summary>
+        /// Returns Longests prefix of query.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns></returns>
+        public string longestPrefixOf(string query)
         {
-            if (s == null || s.Length == 0) return null;
+            if (query == null || query.Length == 0) return null;
             int length = 0;
             Node x = root;
             int i = 0;
-            while (x != null && i < s.Length)
+            while (x != null && i < query.Length)
             {
-                char c = s[i];
+                char c = query[i];
                 if (c < x.c) x = x.left;
                 else if (c > x.c) x = x.right;
                 else
                 {
                     i++;
-                    if (x.val != null) length = i;
+                    if (x.value != null) length = i;
                     x = x.mid;
                 }
             }
-            return s.Substring(0, length);
+            return query.Substring(0, length);
         }
-
-        // all keys in symbol table
-        public IEnumerable<string> keys()
+        
+        /// <summary>
+        /// Returns all keys in symbol table.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> Keys()
         {
             Queue<string> queue = new Queue<string>();
             collect(root, "", queue);
             return queue;
         }
-
-        // all keys starting with given prefix
-        public IEnumerable<string> prefixMatch(string prefix)
+        
+        /// <summary>
+        /// Returns all keys starting with a given prefix.
+        /// </summary>
+        /// <param name="prefix">The prefix.</param>
+        /// <returns></returns>
+        public IEnumerable<string> PrefixMatch(string prefix)
         {
             Queue<string> queue = new Queue<string>();
             Node x = get(root, prefix, 0);
             if (x == null) return queue;
-            if (x.val != null) queue.Enqueue(prefix);
+            if (x.value != null) queue.Enqueue(prefix);
             collect(x.mid, prefix, queue);
             return queue;
         }
-
-        // all keys in subtrie rooted at x with given prefix
-        private void collect(Node x, string prefix, Queue<string> queue)
+        
+        /// <summary>
+        /// Collects all keys in subtrie rooted at x with given prefix.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="queue">The queue.</param>
+        void collect(Node x, string prefix, Queue<string> queue)
         {
             if (x == null) return;
             collect(x.left, prefix, queue);
-            if (x.val != null) queue.Enqueue(prefix + x.c);
+            if (x.value != null) queue.Enqueue(prefix + x.c);
             collect(x.mid, prefix + x.c, queue);
             collect(x.right, prefix, queue);
         }
-
-        // return all keys matching given wilcard pattern
+        
+        /// <summary>
+        /// Returns all keys matching given wilcard pattern.
+        /// </summary>
+        /// <param name="pat">The pat.</param>
+        /// <returns></returns>
         public IEnumerable<string> wildcardMatch(string pat)
         {
             Queue<string> queue = new Queue<string>();
@@ -123,42 +216,66 @@ namespace TernarySearchTree
             return queue;
         }
 
-        private void collect(Node x, string prefix, int i, string pat, Queue<string> q)
+        /// <summary>
+        /// Collects all nodes for the specified prefix pattern.
+        /// </summary>
+        /// <param name="node">The Node.</param>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="charIndex">The index of char.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="query">The query.</param>
+        void collect(Node node, string prefix, int charIndex, string pattern, Queue<string> query)
         {
-            if (x == null) return;
-            char c = pat[i];
-            if (c == '.' || c < x.c) collect(x.left, prefix, i, pat, q);
-            if (c == '.' || c == x.c)
+            if (node == null) return;
+            char charAtIndex = pattern[charIndex];
+            if (charAtIndex == '.' || charAtIndex < node.c) collect(node.left, prefix, charIndex, pattern, query);
+            if (charAtIndex == '.' || charAtIndex == node.c)
             {
-                if (i == pat.Length - 1 && x.val != null) q.Enqueue(prefix + x.c);
-                if (i < pat.Length - 1) collect(x.mid, prefix + x.c, i + 1, pat, q);
+                if (charIndex == pattern.Length - 1 && node.value != null) query.Enqueue(prefix + node.c);
+                if (charIndex < pattern.Length - 1) collect(node.mid, prefix + node.c, charIndex + 1, pattern, query);
             }
-            if (c == '.' || c > x.c) collect(x.right, prefix, i, pat, q);
+            if (charAtIndex == '.' || charAtIndex > node.c) collect(node.right, prefix, charIndex, pattern, query);
         }
-
-
-        // all vals of keys starting with given prefix
-        public IEnumerable<T> search(string prefix)
+        
+        /// <summary>
+        /// Searches  all vals of keys starting with given prefix.
+        /// </summary>
+        /// <param name="prefix">The prefix.</param>
+        /// <returns></returns>
+        public IEnumerable<T> Search(string prefix)
         {
             Queue<T> queue = new Queue<T>();
-            Node x = get(root, prefix, 0);
-            if (x == null) return queue;
-            if (!IsNull(x.val)) queue.Enqueue(x.val);
-            collect(x.mid, prefix, queue);
+            Node node = get(root, prefix, 0);
+            if (node == null) return queue;
+            if (!IsNull(node.value)) queue.Enqueue(node.value);
+            collect(node.mid, prefix, queue);
             return queue;
         }
-
-        // all vals of keys in subtrie rooted at x with given prefix
-        private void collect(Node x, string prefix, Queue<T> queue)
+        
+        /// <summary>
+        /// Collects all vals of keys in subtrie rooted at x with given prefix.
+        /// </summary>
+        /// <param name="node">The x.</param>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="queue">The queue.</param>
+        void collect(Node node, string prefix, Queue<T> queue)
         {
-            if (x == null) return;
-            collect(x.left, prefix, queue);
-            if (!IsNull(x.val)) queue.Enqueue(x.val);
-            collect(x.mid, prefix + x.c, queue);
-            collect(x.right, prefix, queue);
+            if (node == null) return;
+            collect(node.left, prefix, queue);
+            if (!IsNull(node.value)) queue.Enqueue(node.value);
+            collect(node.mid, prefix + node.c, queue);
+            collect(node.right, prefix, queue);
         }
 
-        public static bool IsNull<T>(T value)
+        /// <summary>
+        /// Determines whether the specified value is null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The value.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified value is null; otherwise, <c>false</c>.
+        /// </returns>
+        static bool IsNull<T>(T value)
         {
             return EqualityComparer<T>.Default.Equals(value, default(T));
         }

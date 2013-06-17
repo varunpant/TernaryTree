@@ -89,29 +89,7 @@ namespace TernarySearchTree
 
             return words.ToArray();
         }
-
-        public static string[] StemWords(string[] words)
-        {
-            if (words == null)
-            {
-                return null;
-            }
-
-            List<string> stemmedWords = new List<string>(words.Length);
-            Stemmer stemmer = new Stemmer();
-
-            foreach (string word in words)
-            {
-                string stemmedWord = stemmer.Stem(word);
-                if (!stemmedWords.Contains(stemmedWord))
-                {
-                    stemmedWords.Add(stemmedWord);
-                }
-            }
-
-            return stemmedWords.ToArray();
-        }
-
+ 
 
         static double ConvertBytesToMegabytes(long bytes)
         {
