@@ -64,7 +64,7 @@ namespace TernarySearchTree
         /// </returns>
         public bool Contains(string key)
         {
-            Node node = get(root, key, 0);
+            Node node = Get(root, key, 0);
             if (IsNull(node)) return false;
             return true;
         }
@@ -81,7 +81,7 @@ namespace TernarySearchTree
         {
             get
             {
-                Node node = get(root, key, 0);
+                Node node = Get(root, key, 0);
                 if (IsNull(node)) return default(T);
                 return node.value;
             }
@@ -95,14 +95,14 @@ namespace TernarySearchTree
         /// <param name="key">The key.</param>
         /// <param name="charIndex">The d.</param>
         /// <returns></returns>
-        Node get(Node node, string key, int charIndex)
+        Node Get(Node node, string key, int charIndex)
         {
             if (node == null) return null;
             char c = key[charIndex];
-            if (c < node.c) return get(node.left, key, charIndex);
-            else if (c > node.c) return get(node.right, key, charIndex);
+            if (c < node.c) return Get(node.left, key, charIndex);
+            else if (c > node.c) return Get(node.right, key, charIndex);
             else if (charIndex < key.Length - 1)
-                return get(node.mid, key, charIndex + 1);
+                return Get(node.mid, key, charIndex + 1);
             else return node;
         }
         
@@ -113,6 +113,7 @@ namespace TernarySearchTree
         /// <param name="value">The value.</param>
         public void Add(string key, T value)
         {
+            if (string.IsNullOrEmpty(key)) { throw new InvalidOperationException("Keys cannot be null or empty."); }
             if (!Contains(key)) N++;
             root = Add(root, key, value, 0);
         }
@@ -138,42 +139,21 @@ namespace TernarySearchTree
         }
 
         /// <summary>
-        /// Returns Longests prefix of query.
+        /// Returns all keys in tree.
         /// </summary>
-        /// <param name="query">The query.</param>
-        /// <returns></returns>
-        public string longestPrefixOf(string query)
+        /// <value>
+        /// The keys.
+        /// </value>
+        public IEnumerable<string> Keys
         {
-            if (query == null || query.Length == 0) return null;
-            int length = 0;
-            Node x = root;
-            int i = 0;
-            while (x != null && i < query.Length)
+            get
             {
-                char c = query[i];
-                if (c < x.c) x = x.left;
-                else if (c > x.c) x = x.right;
-                else
-                {
-                    i++;
-                    if (x.value != null) length = i;
-                    x = x.mid;
-                }
+                Queue<string> queue = new Queue<string>();
+                Collect(root, "", queue);
+                return queue;
             }
-            return query.Substring(0, length);
         }
-        
-        /// <summary>
-        /// Returns all keys in symbol table.
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<string> Keys()
-        {
-            Queue<string> queue = new Queue<string>();
-            collect(root, "", queue);
-            return queue;
-        }
-        
+                
         /// <summary>
         /// Returns all keys starting with a given prefix.
         /// </summary>
@@ -182,37 +162,37 @@ namespace TernarySearchTree
         public IEnumerable<string> PrefixMatch(string prefix)
         {
             Queue<string> queue = new Queue<string>();
-            Node x = get(root, prefix, 0);
-            if (x == null) return queue;
-            if (x.value != null) queue.Enqueue(prefix);
-            collect(x.mid, prefix, queue);
+            Node node = Get(root, prefix, 0);
+            if (node == null) return queue;
+            if (node.value != null) queue.Enqueue(prefix);
+            Collect(node.mid, prefix, queue);
             return queue;
         }
         
         /// <summary>
         /// Collects all keys in subtrie rooted at x with given prefix.
         /// </summary>
-        /// <param name="x">The x.</param>
+        /// <param name="node">The x.</param>
         /// <param name="prefix">The prefix.</param>
         /// <param name="queue">The queue.</param>
-        void collect(Node x, string prefix, Queue<string> queue)
+        void Collect(Node node, string prefix, Queue<string> queue)
         {
-            if (x == null) return;
-            collect(x.left, prefix, queue);
-            if (x.value != null) queue.Enqueue(prefix + x.c);
-            collect(x.mid, prefix + x.c, queue);
-            collect(x.right, prefix, queue);
+            if (node == null) return;
+            Collect(node.left, prefix, queue);
+            if (node.value != null) queue.Enqueue(prefix + node.c);
+            Collect(node.mid, prefix + node.c, queue);
+            Collect(node.right, prefix, queue);
         }
-        
+
         /// <summary>
         /// Returns all keys matching given wilcard pattern.
         /// </summary>
         /// <param name="pat">The pat.</param>
         /// <returns></returns>
-        public IEnumerable<string> wildcardMatch(string pat)
+        public IEnumerable<string> WildcardMatch(string pat)
         {
             Queue<string> queue = new Queue<string>();
-            collect(root, "", 0, pat, queue);
+            Collect(root, "", 0, pat, queue);
             return queue;
         }
 
@@ -224,17 +204,17 @@ namespace TernarySearchTree
         /// <param name="charIndex">The index of char.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="query">The query.</param>
-        void collect(Node node, string prefix, int charIndex, string pattern, Queue<string> query)
+        void Collect(Node node, string prefix, int charIndex, string pattern, Queue<string> query)
         {
             if (node == null) return;
             char charAtIndex = pattern[charIndex];
-            if (charAtIndex == '.' || charAtIndex < node.c) collect(node.left, prefix, charIndex, pattern, query);
+            if (charAtIndex == '.' || charAtIndex < node.c) Collect(node.left, prefix, charIndex, pattern, query);
             if (charAtIndex == '.' || charAtIndex == node.c)
             {
                 if (charIndex == pattern.Length - 1 && node.value != null) query.Enqueue(prefix + node.c);
-                if (charIndex < pattern.Length - 1) collect(node.mid, prefix + node.c, charIndex + 1, pattern, query);
+                if (charIndex < pattern.Length - 1) Collect(node.mid, prefix + node.c, charIndex + 1, pattern, query);
             }
-            if (charAtIndex == '.' || charAtIndex > node.c) collect(node.right, prefix, charIndex, pattern, query);
+            if (charAtIndex == '.' || charAtIndex > node.c) Collect(node.right, prefix, charIndex, pattern, query);
         }
         
         /// <summary>
@@ -245,26 +225,26 @@ namespace TernarySearchTree
         public IEnumerable<T> Search(string prefix)
         {
             Queue<T> queue = new Queue<T>();
-            Node node = get(root, prefix, 0);
+            Node node = Get(root, prefix, 0);
             if (node == null) return queue;
             if (!IsNull(node.value)) queue.Enqueue(node.value);
-            collect(node.mid, prefix, queue);
+            Collect(node.mid, prefix, queue);
             return queue;
         }
         
         /// <summary>
-        /// Collects all vals of keys in subtrie rooted at x with given prefix.
+        /// Collects all values of keys in subtrie rooted at x with given prefix.
         /// </summary>
         /// <param name="node">The x.</param>
         /// <param name="prefix">The prefix.</param>
         /// <param name="queue">The queue.</param>
-        void collect(Node node, string prefix, Queue<T> queue)
+        void Collect(Node node, string prefix, Queue<T> queue)
         {
             if (node == null) return;
-            collect(node.left, prefix, queue);
+            Collect(node.left, prefix, queue);
             if (!IsNull(node.value)) queue.Enqueue(node.value);
-            collect(node.mid, prefix + node.c, queue);
-            collect(node.right, prefix, queue);
+            Collect(node.mid, prefix + node.c, queue);
+            Collect(node.right, prefix, queue);
         }
 
         /// <summary>
