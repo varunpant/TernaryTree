@@ -31,7 +31,7 @@ namespace TerenarySearchTestApp
                 }
 
             }
-         //   Console.WriteLine(tree.Key);
+             Console.WriteLine(tree.Keys);
             GC_MemoryEnd = System.GC.GetTotalMemory(true);
 
             Console.WriteLine("========================");
@@ -43,7 +43,21 @@ namespace TerenarySearchTestApp
             while ((input = Console.ReadLine()) != "xx")
             {
                 Console.WriteLine("========================");
-                IEnumerable<int> results = tree.Search(input.ToLower());
+                var words = GetWords(input.ToLower());
+                IEnumerable<int> results = null;
+                foreach (var w in words) {
+                    if (results != null)
+                    {
+                        results = System.Linq.Enumerable.Intersect(results, tree.Search(w));
+                    }
+                    else
+                    {
+                        results = tree.Search(w);
+                    }
+                }
+             
+
+               // IEnumerable<int> results = System.Linq.Enumerable.Intersect(r1, r2,);
                
                 foreach (var r in results)
                 {
