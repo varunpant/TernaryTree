@@ -65,7 +65,7 @@ namespace TernarySearchTree
         public bool Contains(string key)
         {
             Node node = Get(root, key, 0);
-            if (IsNull(node)) return false;
+            if (node == null) return false;
             return true;
         }
 
@@ -82,7 +82,7 @@ namespace TernarySearchTree
             get
             {
                 Node node = Get(root, key, 0);
-                if (IsNull(node)) return default(T);
+                if (node == null) return default(T);
                 return node.value;
             }
 
@@ -105,7 +105,7 @@ namespace TernarySearchTree
                 return Get(node.mid, key, charIndex + 1);
             else return node;
         }
-        
+
         /// <summary>
         /// Adds the specified key.
         /// </summary>
@@ -117,7 +117,7 @@ namespace TernarySearchTree
             if (!Contains(key)) N++;
             root = Add(root, key, value, 0);
         }
-        
+
         /// <summary>
         /// Adds the specified node in the tree.
         /// </summary>
@@ -153,7 +153,7 @@ namespace TernarySearchTree
                 return queue;
             }
         }
-                
+
         /// <summary>
         /// Returns all keys starting with a given prefix.
         /// </summary>
@@ -168,7 +168,7 @@ namespace TernarySearchTree
             Collect(node.mid, prefix, queue);
             return queue;
         }
-        
+
         /// <summary>
         /// Collects all keys in subtrie rooted at x with given prefix.
         /// </summary>
@@ -216,7 +216,7 @@ namespace TernarySearchTree
             }
             if (charAtIndex == '.' || charAtIndex > node.c) Collect(node.right, prefix, charIndex, pattern, query);
         }
-        
+
         /// <summary>
         /// Searches  all vals of keys starting with given prefix.
         /// </summary>
@@ -231,7 +231,7 @@ namespace TernarySearchTree
             Collect(node.mid, prefix, queue);
             return queue;
         }
-        
+
         /// <summary>
         /// Collects all values of keys in subtrie rooted at x with given prefix.
         /// </summary>

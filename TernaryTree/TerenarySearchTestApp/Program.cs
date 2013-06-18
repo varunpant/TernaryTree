@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using System.Text;
-using System.IO;
 using System.Text.RegularExpressions;
+using TernarySearchTree;
+using System.IO;
 
-namespace TernarySearchTree
+namespace TerenarySearchTestApp
 {
     class Program
     {
-
         private static Regex s_wordRegex = new Regex(@"[\w']+");
         private static long GC_MemoryStart, GC_MemoryEnd;
+
+
+
         static void Main(string[] args)
         {
             GC_MemoryStart = System.GC.GetTotalMemory(true);
-            TernaryTree2<int> tree = new TernaryTree2<int>();
+            TernaryTreeExtended<int> tree = new TernaryTreeExtended<int>();
 
-            var lines = File.ReadAllLines("../../sa.txt");
+            var lines = File.ReadAllLines("../../resources/sa.txt");
 
             for (int i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
-                // var words = StemWords(GetWords(line));
+             
                 var words = GetWords(line);
                 foreach (var word in words)
                 {
-                    tree.put(word.Trim(), i);
+                    tree.Add(word.Trim(), i);
                 }
 
             }
-            Console.WriteLine(tree.KeySize);
+         //   Console.WriteLine(tree.Key);
             GC_MemoryEnd = System.GC.GetTotalMemory(true);
 
             Console.WriteLine("========================");
@@ -42,14 +43,13 @@ namespace TernarySearchTree
             while ((input = Console.ReadLine()) != "xx")
             {
                 Console.WriteLine("========================");
-                IEnumerable<int> results = tree.search(input.ToLower());
-                // IEnumerable<string> results = tree.prefixMatch(line);
-                // IEnumerable<string> results = tree.wildcardMatch(line);
+                IEnumerable<int> results = tree.Search(input.ToLower());
+               
                 foreach (var r in results)
                 {
                     Console.WriteLine(lines[r]);
                 }
-                               
+
                 Console.WriteLine("========================");
             }
 
@@ -89,15 +89,12 @@ namespace TernarySearchTree
 
             return words.ToArray();
         }
- 
+
 
         static double ConvertBytesToMegabytes(long bytes)
         {
             return (bytes / 1024f) / 1024f;
         }
-
-
-
 
     }
 }

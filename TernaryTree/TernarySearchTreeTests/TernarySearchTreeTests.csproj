@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TernaryTreeExtendedTests.cs" />
     <Compile Include="TernaryTreeTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,10 +54,6 @@
       <Project>{10A95D34-D88F-4729-BB48-F34B2DE35331}</Project>
       <Name>TernarySearchTree</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="resources\dict.txt" />
-    <Content Include="resources\sa.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

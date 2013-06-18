@@ -7,7 +7,7 @@ using TernarySearchTree;
 namespace TernarySearchTreeTests
 {
     [TestClass]
-    public class TernaryTreeTests
+    public class TernaryTreeExtendedTests
     {
         [TestMethod]
         public void TestCreateTerenaryTree()
@@ -34,25 +34,25 @@ namespace TernarySearchTreeTests
         [TestMethod]
         public void TestAddingDuplicateKeysInTree()
         {
-            TernaryTree<string> tree = new TernaryTree<string>();
+            TernaryTreeExtended<string> tree = new TernaryTreeExtended<string>();
 
             tree.Add("Key1", "value1");
             Assert.AreEqual(1, tree.Length);
-            Assert.AreEqual("value1", tree["Key1"]);
+            Assert.AreEqual("value1", tree["Key1"][0]);
 
             tree.Add("Key1", "value2");
             Assert.AreEqual(1, tree.Length);
-            Assert.AreEqual("value2", tree["Key1"]);
+            Assert.AreEqual("value2", tree["Key1"][1]);
 
         }
 
         [TestMethod]
         public void TestAddingNullValuesInTree()
         {
-            TernaryTree<string> tree = new TernaryTree<string>();
+            TernaryTreeExtended<string> tree = new TernaryTreeExtended<string>();
             tree.Add("Key1", null);
             Assert.AreEqual(1, tree.Length);
-            Assert.IsNull(tree["Key1"]);
+            Assert.IsNull(tree["Key1"][0]);
             Assert.IsTrue(tree.Contains("Key1"));
 
         }
@@ -60,7 +60,7 @@ namespace TernarySearchTreeTests
         [TestMethod]
         public void TestAddingNullKeysInTree()
         {
-            TernaryTree<string> tree = new TernaryTree<string>();
+            TernaryTreeExtended<string> tree = new TernaryTreeExtended<string>();
             try
             {
                 tree.Add(null, null);
@@ -87,14 +87,14 @@ namespace TernarySearchTreeTests
             tree.Add(" ", "white space");
             Assert.AreEqual(1, tree.Length);
             tree.Add(" a ", "another key with space");
-            Assert.AreEqual("white space", tree[" "]);
+            Assert.AreEqual("white space", tree[" "][0]);
 
         }
 
         [TestMethod]
         public void TestTreePrefixSearch()
         {
-            TernaryTree<string> tree = new TernaryTree<string>();
+            TernaryTreeExtended<string> tree = new TernaryTreeExtended<string>();
             var InputKeys = "aback abacus abalone abandon abase abash abate abbas abbe abbey abbot Abbott".ToLower().Split(' ');
             foreach (var key in InputKeys)
             {
@@ -129,7 +129,7 @@ namespace TernarySearchTreeTests
         [TestMethod]
         public void TestTreeWildCardSearch()
         {
-            TernaryTree<string> tree = new TernaryTree<string>();
+            TernaryTreeExtended<string> tree = new TernaryTreeExtended<string>();
             var InputKeys = "aback abacus abalone abandon abase abash abate abbas abbe abbey abbot Abbott".ToLower().Split(' ');
             foreach (var key in InputKeys)
             {
@@ -172,7 +172,7 @@ namespace TernarySearchTreeTests
         public void TestTreePrefixSearchForValues()
         {
 
-            TernaryTree<string> tree = new TernaryTree<string>();
+            TernaryTreeExtended<string> tree = new TernaryTreeExtended<string>();
             var InputKeys = "aback abacus abalone abandon abase abash abate abbas abbe abbey abbot Abbott".ToLower().Split(' ');
             foreach (var key in InputKeys)
             {
@@ -184,7 +184,8 @@ namespace TernarySearchTreeTests
                 int count = getCount(matches);
                 Assert.AreEqual(12, count);
                 int i = 0;
-                foreach (var val in matches) {
+                foreach (var val in matches)
+                {
                     Assert.AreEqual("value of " + InputKeys[i++], val);
                 }
             }
