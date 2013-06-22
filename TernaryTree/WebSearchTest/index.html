@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Geocoding Autosuggest</title>   
+		<link rel="stylesheet" href="styles.css">
+		<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>      
+		
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div id="header">
+			<!--img id="logo" height='45px' src="img/logo.png"/-->
+			<div class="inputs">				
+				<form action="/search" method="get" id="search">
+					
+					<input type="text" 
+					name="q" placeholder="Search Address" 
+					id="headerBarSearch" 
+					class="ui-autocomplete-input" 
+					autocomplete="off" 
+					role="textbox" 
+					aria-autocomplete="list" 
+					aria-haspopup="true"/>
+				</form>					 
+			</div>
+		</div>
+		<div id='map'></div>
+		
+		
+		<script  type="text/javascript"src="jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="typeahead.js"></script>
+		<script type="text/javascript">
+			// Avoid `console` errors in browsers that lack a console.
+			(function() {
+				var method;
+				var noop = function () {};
+				var methods = [
+				'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
+				'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
+				'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
+				'timeStamp', 'trace', 'warn'
+				];
+				var length = methods.length;
+				var console = (window.console = window.console || {});
+				
+				while (length--) {
+					method = methods[length];
+					
+					// Only stub undefined methods.
+					if (!console[method]) {
+						console[method] = noop;
+					}
+				}
+			}());
+			
+			/*===================================================================*/
+			var map = null;
+			var locPushpin = null;
+			var centerPushpin = null;
+			$(document).ready(function() { 
+				/*Hide menu on right click on browsers*/
+				$(document).bind("contextmenu",function(e){
+					return false;
+				}); 
+				
+				initMap()
+				initSearch();
+			});  
+			
+			var getBounds = function(){
+				var bounds = map.getBounds(); 
+				var n = bounds.getNorth();
+				var s = bounds.getSouth();
+				var e = bounds.getEast();
+				var w = bounds.getWest();
+				 
+				return   w + "," + s + "," + e + "," + n  
+			}
+			var getLoc = function()
+			{
+				var loc = "";
+			    if(locPushpin)
+				{
+					var lat = locPushpin._location.latitude;
+					var lon = locPushpin._location.longitude;
+					loc = lon + "," + lat
+				}				 
+				return loc;
+			}
+			function initMap()
+			{
+				map = new Microsoft.Maps.Map(document.getElementById('map'), {credentials: 'Aho_RfEAQOwdkiMOYwMEmyzdgobCdCPrd-eXvYBYKiOpH_e204QKbPtIZ4h8zOi1',
+					enableClickableLogo: false,
+					enableSearchLogo: false,
+					showScalebar: false,
+				center: new Microsoft.Maps.Location(53, -3), zoom:7});
+				Microsoft.Maps.Events.addHandler(map, 'rightclick', function(e) {
+					
+					if (e.isSecondary)
+					{						 
+					    if(locPushpin){map.entities.remove(locPushpin);}
+						var pushpinOptions = {icon: 'poi_custom.png', draggable: true}; 
+						var pixel = new Microsoft.Maps.Point(e.pageX, e.pageY);
+						var latLong = map.tryPixelToLocation(pixel, Microsoft.Maps.PixelReference.page);   
+						locPushpin = new Microsoft.Maps.Pushpin(latLong, pushpinOptions); 						 
+						map.entities.push(locPushpin); 
+						return false;
+					}
+					
+				});
+			}  
+			
+			function initSearch(){
+				
+				var tt = $('.ui-autocomplete-input').typeahead({
+				    name: 'search',					                                                       
+					remote: {
+					    url: 'search.ashx?key=%QUERY&bounds=%BOUNDS&loc=%LOC',
+						 
+						replace :function(url, encodedQuery)
+						{							 
+							url = url.replace("%QUERY", encodedQuery).replace("%BOUNDS", getBounds()).replace("%LOC", getLoc())
+							
+							console.debug(url);	
+					    	return url;
+						} 
+					},                                         
+					limit: 30  
+				});
+				
+				/*called when an item is selected*/
+				tt.on("typeahead:selected",function(evt,datum){					 
+					var lon,lat,z;
+					try{
+					    console.debug(datum);					
+						lon = parseFloat(datum.X);
+						lat = parseFloat(datum.Y);
+						z =16;
+					}
+					catch(ex){
+						console.error(ex);
+						//reset
+						z = 7;
+						lon = 53;
+						lat = -3;						
+					}
+					var _center = new Microsoft.Maps.Location(lat,lon);
+					map.setView({ zoom: z, center: _center});
+					
+					if(centerPushpin){map.entities.remove(centerPushpin);}					
+					centerPushpin = new Microsoft.Maps.Pushpin(_center, null); 
+					map.entities.push(centerPushpin);
+					
+				});
+				
+				
+				
+			}
+			
+		</script>
+		
+	</body>
+</html>

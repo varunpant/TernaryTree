@@ -38,7 +38,7 @@ namespace TernarySearchTree
                 internal Node left, mid, right;
 
                 /// <summary>
-                /// The value associated with string
+                /// The value associated.
                 /// </summary>
                 internal T[] value;
             }

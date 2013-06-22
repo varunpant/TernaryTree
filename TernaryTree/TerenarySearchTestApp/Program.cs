@@ -56,8 +56,6 @@ namespace TerenarySearchTestApp
                     }
                 }
              
-
-               // IEnumerable<int> results = System.Linq.Enumerable.Intersect(r1, r2,);
                
                 foreach (var r in results)
                 {
