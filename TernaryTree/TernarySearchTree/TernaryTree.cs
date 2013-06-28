@@ -259,6 +259,46 @@ namespace TernarySearchTree
         {
             return EqualityComparer<T>.Default.Equals(value, default(T));
         }
+        
+        /// <summary>
+        /// Returns all values for keys in the dictionary that are within a given Hamming distance of a query.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="distance">Hamming distance.</param>
+        /// <returns></returns>
+        public IEnumerable<T> nearSearch(string query, int distance)
+        {
+            Queue<T> queue = new Queue<T>();
+            if (!string.IsNullOrWhiteSpace(query) && distance > 0)
+                Collect(query, root, queue, distance);
+            return queue;
+        }
 
+        /// <summary>
+        /// Collects all values of keys which are within a given Hamming Distance.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="node">The node.</param>
+        /// <param name="queue">The queue.</param>
+        /// <param name="d">The d.</param>
+        void Collect(string query, Node node, Queue<T> queue, int d)
+        {
+            if (node == null) return;
+            char c = query[0];
+            if (d > 0 || c < node.c) { Collect(query, node.left, queue, d); }
+            if (!IsNull(node.value))
+            {
+                if (query.Length <= d)
+                {
+                    queue.Enqueue(node.value);
+                }
+            }
+            else
+            {
+                Collect(query.Length > 1 ? query.Substring(1) : query, node.mid, queue, c == node.c ? d : d - 1);
+            }
+            if (d > 0 || c > node.c) { Collect(query, node.right, queue, d); }
+
+        }
     }
 }

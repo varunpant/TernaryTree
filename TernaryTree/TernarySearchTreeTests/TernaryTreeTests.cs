@@ -190,6 +190,22 @@ namespace TernarySearchTreeTests
             }
         }
 
+        [TestMethod]
+        public void TestTreeNearSearchForValues()
+        {
+            TernaryTree<string> tree = new TernaryTree<string>();            
+            var InputKeys = "aback abacus abalone abandon abase abash abate abbas abbe abbey abbot Abbott".ToLower().Split(' ');
+            foreach (var key in InputKeys)
+            {
+                tree.Add(key, "value of " + key);
+            }
+            var near = tree.nearSearch("abacus", 5);
+            int count = getCount(near);
+            Assert.AreEqual(10, count);
+
+        }
+
+
         private static int getCount(IEnumerable<string> Keys)
         {
             IEnumerator iterator = Keys.GetEnumerator();
