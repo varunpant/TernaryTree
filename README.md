@@ -20,3 +20,6 @@ If you like or use this project somewhere please contact me at
 varun@varunpant.com
 
 http://varunpant.com
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/varunpant/ternarytree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
