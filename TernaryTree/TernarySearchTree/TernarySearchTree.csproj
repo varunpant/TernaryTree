@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITernaryTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TernaryTree.cs" />
     <Compile Include="TernaryTreeExtended.cs" />

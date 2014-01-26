@@ -8,7 +8,7 @@ namespace TernarySearchTree
     /// Creates an instance of terenary search tree.
     /// </summary>
     /// <typeparam name="T">Value</typeparam>
-    public class TernaryTree<T>
+    public class TernaryTree<T> : TernarySearchTree.ITernaryTree<T>
     {
         /// <summary>
         /// The size of tree.
@@ -266,7 +266,7 @@ namespace TernarySearchTree
         /// <param name="query">The query.</param>
         /// <param name="distance">Hamming distance.</param>
         /// <returns></returns>
-        public IEnumerable<T> nearSearch(string query, int distance)
+        public IEnumerable<T> NearSearch(string query, int distance)
         {
             Queue<T> queue = new Queue<T>();
             if (!string.IsNullOrWhiteSpace(query) && distance > 0)

@@ -199,7 +199,7 @@ namespace TernarySearchTreeTests
             {
                 tree.Add(key, "value of " + key);
             }
-            var near = tree.nearSearch("abacus", 5);
+            var near = tree.NearSearch("abacus", 5);
             int count = getCount(near);
             Assert.AreEqual(10, count);
 
